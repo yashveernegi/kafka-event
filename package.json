@@ -1,0 +1,22 @@
+{
+  "name": "kafka-order-events",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "kafka:up": "docker compose up -d kafka",
+    "topics": "node src/scripts/create-topics.js",
+    "order": "node src/services/order/index.js",
+    "inventory": "node src/services/inventory/index.js",
+    "payment": "node src/services/payment/index.js",
+    "notification": "node src/services/notification/index.js",
+    "dev": "concurrently -n order,inventory,payment,notify -c blue,green,yellow,magenta \"npm:order\" \"npm:inventory\" \"npm:payment\" \"npm:notification\""
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "kafkajs": "^2.2.4"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

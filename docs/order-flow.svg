@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="send" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e8710a"/>
+    </marker>
+    <marker id="poll" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a73e8"/>
+    </marker>
+    <marker id="http" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+    <style>
+      .title { font-size: 15px; font-weight: 700; fill: #202124; }
+      .sub { font-size: 11px; fill: #5f6368; }
+      .code { font-family: Consolas, monospace; font-size: 11px; fill: #202124; }
+      .lbl { font-size: 11px; font-weight: 600; }
+      .send { stroke: #e8710a; stroke-width: 2; fill: none; marker-end: url(#send); }
+      .poll { stroke: #1a73e8; stroke-width: 2; fill: none; stroke-dasharray: 6 4; marker-end: url(#poll); }
+      .step { font-size: 11px; font-weight: 700; fill: #fff; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="600" y="26" text-anchor="middle" font-size="20" font-weight="700" fill="#202124">E-commerce order flow with Kafka</text>
+
+  <!-- Customer -->
+  <rect x="20" y="85" width="110" height="60" rx="10" fill="#f1f3f4" stroke="#5f6368"/>
+  <text x="75" y="112" text-anchor="middle" class="title">Customer</text>
+  <text x="75" y="130" text-anchor="middle" class="sub">browser / app</text>
+  <path d="M130,105 L176,105" stroke="#444" stroke-width="2" marker-end="url(#http)"/>
+  <path d="M176,128 L132,128" stroke="#444" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#http)"/>
+  <circle cx="153" cy="93" r="9" fill="#444"/><text x="153" y="97" text-anchor="middle" class="step">1</text>
+  <text x="20" y="168" class="sub">POST /orders</text>
+  <text x="20" y="182" class="sub">reply: { orderId,</text>
+  <text x="20" y="196" class="sub">status: PLACED }</text>
+
+  <!-- Order service -->
+  <rect x="178" y="45" width="300" height="470" rx="12" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5"/>
+  <text x="328" y="70" text-anchor="middle" class="title">Order service</text>
+  <text x="328" y="86" text-anchor="middle" class="sub">src/services/order · port 3000</text>
+
+  <rect x="198" y="96" width="260" height="40" rx="6" fill="#fff" stroke="#9aa0a6"/>
+  <text x="210" y="113" class="code">order.routes.js</text>
+  <text x="210" y="128" class="sub">POST /orders · GET /orders/:id</text>
+  <path d="M328,136 L328,150" stroke="#9aa0a6" stroke-width="1.5" marker-end="url(#http)"/>
+
+  <rect x="198" y="152" width="260" height="34" rx="6" fill="#fff" stroke="#9aa0a6"/>
+  <text x="210" y="173" class="code">order.controller.js</text>
+  <path d="M328,186 L328,200" stroke="#9aa0a6" stroke-width="1.5" marker-end="url(#http)"/>
+
+  <rect x="198" y="202" width="260" height="48" rx="6" fill="#fff" stroke="#e8710a" stroke-width="1.5"/>
+  <text x="210" y="221" class="code">order.service.js</text>
+  <text x="210" y="238" class="sub">placeOrder() → sendEvent(order-placed)</text>
+  <path d="M328,250 L328,264" stroke="#9aa0a6" stroke-width="1.5" marker-end="url(#http)"/>
+
+  <rect x="198" y="266" width="260" height="40" rx="6" fill="#fff" stroke="#9aa0a6"/>
+  <text x="210" y="283" class="code">order.repository.js</text>
+  <text x="210" y="298" class="sub">in-memory orders store</text>
+
+  <rect x="198" y="365" width="260" height="130" rx="6" fill="#fff" stroke="#1a73e8" stroke-width="1.5"/>
+  <text x="210" y="384" class="code">order.events.js</text>
+  <text x="210" y="400" class="sub">group: order-service · updateStatus()</text>
+  <text x="210" y="428" class="code">inventory-updated → INVENTORY_UPDATED</text>
+  <text x="210" y="452" class="code">payment-confirmed → PAID</text>
+  <text x="210" y="476" class="code">user-notified     → COMPLETED</text>
+  <path d="M328,365 L328,310" stroke="#9aa0a6" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#http)"/>
+  <text x="336" y="342" class="sub">updates</text>
+
+  <!-- Kafka -->
+  <rect x="540" y="45" width="240" height="470" rx="12" fill="#fef7e0" stroke="#202124" stroke-width="1.5"/>
+  <text x="660" y="70" text-anchor="middle" class="title">Kafka broker</text>
+  <text x="660" y="86" text-anchor="middle" class="sub">stores events · never calls services</text>
+
+  <g>
+    <rect x="560" y="95" width="200" height="75" rx="8" fill="#fff" stroke="#e8710a"/>
+    <text x="660" y="116" text-anchor="middle" class="code" font-weight="700">order-placed</text>
+    <rect x="572" y="130" width="54" height="26" rx="4" fill="#fde7d4"/><text x="599" y="147" text-anchor="middle" class="sub">P0</text>
+    <rect x="633" y="130" width="54" height="26" rx="4" fill="#fde7d4"/><text x="660" y="147" text-anchor="middle" class="sub">P1</text>
+    <rect x="694" y="130" width="54" height="26" rx="4" fill="#fde7d4"/><text x="721" y="147" text-anchor="middle" class="sub">P2</text>
+  </g>
+  <g>
+    <rect x="560" y="200" width="200" height="75" rx="8" fill="#fff" stroke="#e8710a"/>
+    <text x="660" y="221" text-anchor="middle" class="code" font-weight="700">inventory-updated</text>
+    <rect x="572" y="235" width="54" height="26" rx="4" fill="#fde7d4"/><text x="599" y="252" text-anchor="middle" class="sub">P0</text>
+    <rect x="633" y="235" width="54" height="26" rx="4" fill="#fde7d4"/><text x="660" y="252" text-anchor="middle" class="sub">P1</text>
+    <rect x="694" y="235" width="54" height="26" rx="4" fill="#fde7d4"/><text x="721" y="252" text-anchor="middle" class="sub">P2</text>
+  </g>
+  <g>
+    <rect x="560" y="305" width="200" height="75" rx="8" fill="#fff" stroke="#e8710a"/>
+    <text x="660" y="326" text-anchor="middle" class="code" font-weight="700">payment-confirmed</text>
+    <rect x="572" y="340" width="54" height="26" rx="4" fill="#fde7d4"/><text x="599" y="357" text-anchor="middle" class="sub">P0</text>
+    <rect x="633" y="340" width="54" height="26" rx="4" fill="#fde7d4"/><text x="660" y="357" text-anchor="middle" class="sub">P1</text>
+    <rect x="694" y="340" width="54" height="26" rx="4" fill="#fde7d4"/><text x="721" y="357" text-anchor="middle" class="sub">P2</text>
+  </g>
+  <g>
+    <rect x="560" y="410" width="200" height="75" rx="8" fill="#fff" stroke="#e8710a"/>
+    <text x="660" y="431" text-anchor="middle" class="code" font-weight="700">user-notified</text>
+    <rect x="572" y="445" width="54" height="26" rx="4" fill="#fde7d4"/><text x="599" y="462" text-anchor="middle" class="sub">P0</text>
+    <rect x="633" y="445" width="54" height="26" rx="4" fill="#fde7d4"/><text x="660" y="462" text-anchor="middle" class="sub">P1</text>
+    <rect x="694" y="445" width="54" height="26" rx="4" fill="#fde7d4"/><text x="721" y="462" text-anchor="middle" class="sub">P2</text>
+  </g>
+  <text x="660" y="503" text-anchor="middle" class="sub">key = orderId → same partition, in order</text>
+
+  <!-- Order service -> order-placed -->
+  <path d="M458,226 C505,226 515,132 558,132" class="send"/>
+  <circle cx="508" cy="180" r="9" fill="#e8710a"/><text x="508" y="184" text-anchor="middle" class="step">2</text>
+
+  <!-- Topics -> order.events.js (poll) -->
+  <path d="M560,248 C515,248 505,420 460,420" class="poll"/>
+  <path d="M560,352 C520,352 505,444 460,444" class="poll"/>
+  <path d="M560,457 C520,457 505,468 460,468" class="poll"/>
+  <circle cx="512" cy="392" r="9" fill="#1a73e8"/><text x="512" y="396" text-anchor="middle" class="step">9</text>
+
+  <!-- Inventory -->
+  <rect x="860" y="80" width="310" height="105" rx="12" fill="#e6f4ea" stroke="#188038" stroke-width="1.5"/>
+  <text x="878" y="104" class="title">Inventory service</text>
+  <text x="878" y="121" class="sub">group: inventory-service</text>
+  <text x="878" y="142" class="code">inventory.events.js  onOrderPlaced()</text>
+  <text x="878" y="160" class="code">inventory.service.js reduceStock()</text>
+  <text x="878" y="176" class="sub">stock P100: 10 → 8</text>
+
+  <!-- Payment -->
+  <rect x="860" y="215" width="310" height="105" rx="12" fill="#e6f4ea" stroke="#188038" stroke-width="1.5"/>
+  <text x="878" y="239" class="title">Payment service</text>
+  <text x="878" y="256" class="sub">group: payment-service</text>
+  <text x="878" y="277" class="code">payment.events.js  onInventoryUpdated()</text>
+  <text x="878" y="295" class="code">payment.service.js chargeCustomer()</text>
+  <text x="878" y="311" class="sub">adds paymentId: PAY-…</text>
+
+  <!-- Notification -->
+  <rect x="860" y="350" width="310" height="105" rx="12" fill="#e6f4ea" stroke="#188038" stroke-width="1.5"/>
+  <text x="878" y="374" class="title">Notification service</text>
+  <text x="878" y="391" class="sub">group: notification-service</text>
+  <text x="878" y="412" class="code">notification.events.js  onPaymentConfirmed()</text>
+  <text x="878" y="430" class="code">notification.service.js notifyUser()</text>
+  <text x="878" y="446" class="sub">"Email to u1: Your order … is confirmed!"</text>
+
+  <!-- order-placed -> Inventory (poll), Inventory -> inventory-updated (send) -->
+  <path d="M760,118 L858,118" class="poll"/>
+  <circle cx="809" cy="106" r="9" fill="#1a73e8"/><text x="809" y="110" text-anchor="middle" class="step">3</text>
+  <path d="M860,165 C820,165 800,222 762,222" class="send"/>
+  <circle cx="822" cy="190" r="9" fill="#e8710a"/><text x="822" y="194" text-anchor="middle" class="step">4</text>
+
+  <!-- inventory-updated -> Payment (poll), Payment -> payment-confirmed (send) -->
+  <path d="M760,252 L858,252" class="poll"/>
+  <circle cx="809" cy="240" r="9" fill="#1a73e8"/><text x="809" y="244" text-anchor="middle" class="step">5</text>
+  <path d="M860,300 C820,300 800,328 762,328" class="send"/>
+  <circle cx="822" cy="315" r="9" fill="#e8710a"/><text x="822" y="319" text-anchor="middle" class="step">6</text>
+
+  <!-- payment-confirmed -> Notification (poll), Notification -> user-notified (send) -->
+  <path d="M760,360 C810,360 815,385 858,385" class="poll"/>
+  <circle cx="809" cy="366" r="9" fill="#1a73e8"/><text x="809" y="370" text-anchor="middle" class="step">7</text>
+  <path d="M860,435 C820,435 800,440 762,440" class="send"/>
+  <circle cx="822" cy="438" r="9" fill="#e8710a"/><text x="822" y="442" text-anchor="middle" class="step">8</text>
+
+  <!-- Status timeline -->
+  <text x="20" y="560" class="title">Order status</text>
+  <rect x="20" y="575" width="190" height="44" rx="22" fill="#f1f3f4" stroke="#5f6368"/>
+  <text x="115" y="602" text-anchor="middle" class="code" font-weight="700">PLACED</text>
+  <rect x="320" y="575" width="230" height="44" rx="22" fill="#fef7e0" stroke="#e8710a"/>
+  <text x="435" y="602" text-anchor="middle" class="code" font-weight="700">INVENTORY_UPDATED</text>
+  <rect x="660" y="575" width="190" height="44" rx="22" fill="#e8f0fe" stroke="#1a73e8"/>
+  <text x="755" y="602" text-anchor="middle" class="code" font-weight="700">PAID</text>
+  <rect x="960" y="575" width="210" height="44" rx="22" fill="#e6f4ea" stroke="#188038"/>
+  <text x="1065" y="602" text-anchor="middle" class="code" font-weight="700">COMPLETED</text>
+  <path d="M210,597 L318,597" stroke="#444" stroke-width="2" marker-end="url(#http)"/>
+  <text x="264" y="589" text-anchor="middle" class="sub">inventory-updated</text>
+  <path d="M550,597 L658,597" stroke="#444" stroke-width="2" marker-end="url(#http)"/>
+  <text x="604" y="589" text-anchor="middle" class="sub">payment-confirmed</text>
+  <path d="M850,597 L958,597" stroke="#444" stroke-width="2" marker-end="url(#http)"/>
+  <text x="904" y="589" text-anchor="middle" class="sub">user-notified</text>
+  <text x="115" y="638" text-anchor="middle" class="sub">POST /orders</text>
+
+  <!-- Legend -->
+  <line x1="20" y1="690" x2="70" y2="690" class="send"/>
+  <text x="80" y="694" class="lbl" fill="#e8710a">send event (producer)</text>
+  <line x1="260" y1="690" x2="310" y2="690" class="poll"/>
+  <text x="320" y="694" class="lbl" fill="#1a73e8">poll event (consumer)</text>
+  <line x1="500" y1="690" x2="550" y2="690" stroke="#444" stroke-width="2" marker-end="url(#http)"/>
+  <text x="560" y="694" class="lbl" fill="#444">HTTP / in-process call</text>
+  <text x="20" y="728" class="sub">Each service runs as its own process/container and only talks to Kafka. Each has its own consumer group, so every service gets its own copy of the events it subscribes to.</text>
+</svg>
