@@ -1,4 +1,4 @@
-**# Kafka order events (simple Node.js sample)
+## Kafka order events (simple Node.js sample)
 
 ```
 POST /orders
