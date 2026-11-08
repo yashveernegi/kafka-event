@@ -1,6 +1,4 @@
-# Kafka order events (simple Node.js sample)
-
-![Order flow](docs/order-flow.png)
+**# Kafka order events (simple Node.js sample)
 
 ```
 POST /orders
@@ -132,4 +130,4 @@ docker compose up --build
 # See the events stored in Kafka
 ```
 docker compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:19092 --topic order-placed --from-beginning --property print.key=true
-```
+```**
