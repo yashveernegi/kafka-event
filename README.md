@@ -2,8 +2,6 @@
 
 ![Order flow](docs/order-flow.png)
 
-Step-by-step walkthrough: [flow.md](flow.md)
-
 ```
 POST /orders
    │
